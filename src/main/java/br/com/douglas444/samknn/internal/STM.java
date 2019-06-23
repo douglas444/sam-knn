@@ -21,6 +21,7 @@ class STM extends Memory {
     /** Resets the memory, deleting all points, and then retrains the model
      * inserting one by one the points of the sequence passed as argument.
      *
+     * @param sequence list of points representing the sequence.
      * @return the Interleaved Test-Train Error.
      */
     private double testTrainOnSequence(List<Point> sequence) {

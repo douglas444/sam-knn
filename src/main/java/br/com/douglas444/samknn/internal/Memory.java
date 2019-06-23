@@ -145,12 +145,16 @@ class Memory {
     }
 
     /** Updates the model inserting a point into the memory.
+     *
+     * @param point the point to be inserted
      */
     void insert(Point point) {
         points.add(point);
     }
 
     /** Updates the model inserting a list of points into the memory.
+     *
+     * @param points the list of points to be inserted
      */
     void insert(List<Point> points) {
         this.points.addAll(points);
