@@ -59,7 +59,7 @@ public class SAMKNN {
     public Optional<Double> predictAndUpdate(Point point) {
 
         Optional<Double> label = this.predict(point);
-        if (label.isPresent() && label.get() != point.getY()) {
+        if (!label.isPresent() || label.get() != point.getY()) {
             ++losses;
         }
         ++timestamp;
@@ -89,7 +89,11 @@ public class SAMKNN {
 
     }
 
-    public double getAccuracy() {
+    /** Calculates the accuracy of the current model.
+     *
+     * @return the accuracy of the current model.
+     */
+    public double calculatesAccuracy() {
         if (timestamp > 0) {
             return (double) losses / timestamp;
         } else {

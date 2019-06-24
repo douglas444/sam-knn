@@ -26,8 +26,6 @@ class Memory {
      */
     private List<Point> getKNearestNeighbors(Point point, int k) {
 
-
-
         List<Point> pointList = new ArrayList<>(this.points);
         pointList.remove(point);
         pointList.sort(new DistanceComparator(point));
@@ -45,10 +43,6 @@ class Memory {
      * @param point the point that will serve as base of the cleaning process.
      */
     void clean(Memory memory, Point point) {
-
-        if (this.size() < 1) {
-            return;
-        }
 
         List<Point> nearestNeighbors = memory
                 .getKNearestNeighbors(point, Hyperparameter.K)
@@ -76,10 +70,6 @@ class Memory {
      * @param memory the memory with which the points are inconsistent.
      */
     void clean(Memory memory) {
-
-        if (this.size() < 1) {
-            return;
-        }
 
         memory.getPoints().forEach(point -> this.clean(memory, point));
 
