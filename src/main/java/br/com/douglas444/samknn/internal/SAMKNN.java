@@ -3,6 +3,7 @@ package br.com.douglas444.samknn.internal;
 import br.com.douglas444.dsframework.Point;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SAMKNN {
 
@@ -25,24 +26,25 @@ public class SAMKNN {
     /** Predicts the label of a point using the current model.
      *
      * @param point the point that the label will be predicted.
-     * @return the predicted label.
+     * @return the predicted label  or empty if there is not
+     * enough points in the memory to execute the prediction.
      */
-    public double predict(Point point) {
+    public Optional<Double> predict(Point point) {
 
         double wst = this.stm.calculateWeight(this.stm.getPoints());
         double wlt = this.ltm.calculateWeight(this.stm.getPoints());
         double wc = this.cm.calculateWeight(this.stm.getPoints());
 
-        double y;
+        Optional<Double> label;
         if (wst > Math.max(wlt, wc)) {
-            y = this.stm.predict(point);
+            label = this.stm.predict(point);
         } else if (wlt > Math.max(wst, wc)) {
-            y = this.ltm.predict(point);
+            label = this.ltm.predict(point);
         } else  {
-            y = this.cm.predict(point);
+            label = this.cm.predict(point);
         }
 
-        return y;
+        return label;
 
     }
 
@@ -51,12 +53,13 @@ public class SAMKNN {
      *
      * @param point the point that the label will be predicted and that the
      *              true label will be used to update the model.
-     * @return the predicted label.
+     * @return the predicted label  or empty if there is not
+     * enough points in the memory to execute the prediction.
      */
-    public double predictAndUpdate(Point point) {
+    public Optional<Double> predictAndUpdate(Point point) {
 
-        double y = this.predict(point);
-        if (y != point.getY()) {
+        Optional<Double> label = this.predict(point);
+        if (label.isPresent() && label.get() != point.getY()) {
             ++losses;
         }
         ++timestamp;
@@ -82,8 +85,16 @@ public class SAMKNN {
             ltm.insert(memory.getPoints());
         }
 
-        return y;
+        return label;
 
+    }
+
+    public double getAccuracy() {
+        if (timestamp > 0) {
+            return (double) losses / timestamp;
+        } else {
+            return 0;
+        }
     }
 
     public int getTimestamp() {

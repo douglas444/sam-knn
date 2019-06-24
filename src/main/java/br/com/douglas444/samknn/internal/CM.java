@@ -4,6 +4,7 @@ import br.com.douglas444.dsframework.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 class CM extends Memory {
 
@@ -25,12 +26,12 @@ class CM extends Memory {
     }
 
     @Override
-    double predict(Point point) {
+    Optional<Double> predict(Point point) {
         super.getPoints().addAll(stm.getPoints());
         super.getPoints().addAll(ltm.getPoints());
-        double y = super.predict(point);
+        Optional<Double> label = super.predict(point);
         super.getPoints().clear();
-        return y;
+        return label;
     }
 
     @Override

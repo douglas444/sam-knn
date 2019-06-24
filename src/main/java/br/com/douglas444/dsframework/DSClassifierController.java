@@ -1,15 +1,17 @@
 package br.com.douglas444.dsframework;
+import java.util.Optional;
 
 public interface DSClassifierController {
 
-    /** Predicts the label of a point using the current model.
+    /** Tries to predicts the label of a point using the current model and
+     * then update the model using the true label.
      *
      * @param point the point that the label will be predicted.
-     * @return the predicted label.
+     * @return the predicted label or empty if the label could not be predicted.
      */
-    double predictAndUpdate(Point point);
+    Optional<Double> predictAndUpdate(Point point);
 
-    /** Calculates the accuracy of the current model.
+    /** Returns the accuracy of the current model.
      *
      * @return the accuracy of the current model.
      */

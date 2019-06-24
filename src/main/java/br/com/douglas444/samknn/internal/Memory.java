@@ -92,26 +92,26 @@ class Memory {
      */
     double calculateWeight(List<Point> points) {
 
-        if (this.size() < 2) {
-            return 0;
-        }
-
         return points
                 .stream()
-                .mapToDouble(point -> predict(point) == point.getY() ? 1 : 0)
+                .mapToDouble(point -> {
+                    Optional<Double> label = predict(point);
+                    if (label.isPresent() && label.get() == point.getY()) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                })
                 .sum() / points.size();
     }
 
     /** Predicts the label of a point.
      *
      * @param point the point which the label will be predicted.
-     * @return the predicted label of the point.
+     * @return the predicted label of the point or empty if there is not
+     * enough points in the memory to execute the prediction.
      */
-    double predict(Point point) {
-
-        if (this.size() < 2) {
-            return -1;
-        }
+    Optional<Double> predict(Point point) {
 
         HashMap<Double, Double> inverseDistanceSumPerY = new HashMap<>();
 
@@ -131,8 +131,11 @@ class Memory {
             }
         }
 
-
-        return Objects.requireNonNull(maxEntry).getKey();
+        if (maxEntry == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(maxEntry.getKey());
+        }
     }
 
     /** Checks if the memory has reached the maximum size.

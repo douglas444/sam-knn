@@ -4,6 +4,7 @@ import br.com.douglas444.dsframework.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 class STM extends Memory {
 
@@ -30,8 +31,8 @@ class STM extends Memory {
         super.setPoints(new ArrayList<>());
 
         for (Point point : sequence) {
-            double y = super.predict(point);
-            if (y != point.getY()) {
+            Optional<Double> label = super.predict(point);
+            if (label.isPresent() && label.get() != point.getY()) {
                 ++losses;
             }
             super.insert(point);
