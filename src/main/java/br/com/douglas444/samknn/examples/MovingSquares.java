@@ -26,6 +26,7 @@ public class MovingSquares {
 
         SAMKNNController samknnController= new SAMKNNController();
 
+        int t = 0;
         Point point;
         while(true) {
 
@@ -39,8 +40,7 @@ public class MovingSquares {
 
             samknnController.predictAndUpdate(point);
 
-
-            System.out.println("TTE: " + samknnController.getAccuracy());
+            System.out.println(" Timestamp: " + (t++) + " Accuracy: " + samknnController.getAccuracy());
         }
 
     }

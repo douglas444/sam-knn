@@ -95,7 +95,7 @@ public class SAMKNN {
      */
     public double calculatesAccuracy() {
         if (timestamp > 0) {
-            return (double) losses / timestamp;
+            return 1 - ((double) losses / timestamp);
         } else {
             return 0;
         }
