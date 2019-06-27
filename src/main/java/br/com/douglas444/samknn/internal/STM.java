@@ -64,9 +64,9 @@ class STM extends Memory {
         STM minimum = this;
         STM bisection = new STM(this.getMostRecentBisection());
 
-        while (bisection.size() > Hyperparameter.L_MIN) {
+        while (bisection.size() >= Hyperparameter.L_MIN) {
 
-            if (bisection.calculateInterleavedTestTrainError() < minimum.calculateInterleavedTestTrainError()) {
+            if (bisection.calculateInterleavedTestTrainError() <= minimum.calculateInterleavedTestTrainError()) {
                 minimum = bisection;
             }
 
