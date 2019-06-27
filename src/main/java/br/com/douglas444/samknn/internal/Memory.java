@@ -9,13 +9,16 @@ import java.util.stream.Collectors;
 class Memory {
 
     private List<Point> points;
+    private List<Boolean> predictionLogs;
 
     Memory() {
         this.points =  new ArrayList<>();
+        this.predictionLogs = new ArrayList<>();
     }
 
     Memory(List<Point> points) {
         this.points =  points;
+        this.predictionLogs = new ArrayList<>();
     }
 
     /** Gets the k nearest points.
@@ -75,24 +78,32 @@ class Memory {
 
     }
 
-    /** Calculates memory weight given a list of points to be predicted.
-     *
-     * @param points the list of points to be predicted.
-     * @return the weight calculated.
-     */
-    double calculateWeight(List<Point> points) {
+    double calculateWeight(int m) {
 
-        return points
+        return this.predictionLogs
+                .subList(this.predictionLogs.size() - m, this.predictionLogs.size())
                 .stream()
-                .mapToDouble(point -> {
-                    Optional<Double> label = predict(point);
-                    if (label.isPresent() && label.get() == point.getY()) {
+                .mapToDouble(predictionLog -> {
+                    if (predictionLog) {
                         return 1;
                     } else {
                         return 0;
                     }
                 })
-                .sum() / points.size();
+                .sum() / m;
+    }
+
+    Optional<Double> predictAndLog(Point point) {
+        Optional<Double> label = this.predict(point);
+        if (label.isPresent() && label.get() == point.getY()) {
+            predictionLogs.add(true);
+        } else {
+            predictionLogs.add(false);
+        }
+        if (predictionLogs.size() == Hyperparameter.L_MAX) {
+            predictionLogs.remove(0);
+        }
+        return label;
     }
 
     /** Predicts the label of a point.
@@ -128,15 +139,6 @@ class Memory {
         }
     }
 
-    /** Checks if the memory has reached the maximum size.
-     *
-     * @return true if the memory has reached the maximum size, false
-     * otherwise.
-     */
-    boolean isFull() {
-        return points.size() >= Hyperparameter.L_MAX;
-    }
-
     /** Updates the model inserting a point into the memory.
      *
      * @param point the point to be inserted
@@ -151,14 +153,6 @@ class Memory {
      */
     void insert(List<Point> points) {
         this.points.addAll(points);
-    }
-
-    /** Calculates the remaining space in the memory.
-     *
-     * @return remaining space in the memory.
-     */
-    int getRemainingSpace() {
-        return  Hyperparameter.L_MAX - this.size();
     }
 
     /** Returns the number of points in the memory.

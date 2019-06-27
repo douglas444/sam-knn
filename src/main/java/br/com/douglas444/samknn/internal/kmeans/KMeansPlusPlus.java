@@ -29,7 +29,7 @@ public class KMeansPlusPlus {
 
         for (int i = 0; i < k; ++i) {
             Point center = randomSelectNextCenter(points, centers);
-            points.remove(center);
+            //points.remove(center);
             centers.add(center);
         }
 
@@ -54,7 +54,7 @@ public class KMeansPlusPlus {
         Iterator<Map.Entry<Point, Double>> iterator = entries.iterator();
         Point selectedCenter = iterator.next().getKey();
 
-        while (selectedCenter == null && iterator.hasNext()) {
+        while (iterator.hasNext()) {
 
             Map.Entry<Point, Double> entry = iterator.next();
             double r = generator.nextDouble() * roulette;
@@ -166,8 +166,13 @@ public class KMeansPlusPlus {
 
         do {
 
-            oldCenters = newCenters;
-            clusters.forEach(cluster -> newCenters.add(cluster.calculateCenter()));
+            oldCenters = new HashSet<>(newCenters);
+            newCenters = new HashSet<>();
+
+            for (Cluster cluster : clusters) {
+                newCenters.add(cluster.calculateCenter());
+            }
+
             clusters = groupByClosestCenter(points, newCenters);
 
         } while(!oldCenters.containsAll(newCenters));

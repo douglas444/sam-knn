@@ -17,20 +17,11 @@ class CM extends Memory {
     }
 
     @Override
-    double calculateWeight(List<Point> points) {
-        super.getPoints().addAll(stm.getPoints());
-        super.getPoints().addAll(ltm.getPoints());
-        double weight = super.calculateWeight(points);
-        super.getPoints().clear();
-        return weight;
-    }
-
-    @Override
     Optional<Double> predict(Point point) {
         super.getPoints().addAll(stm.getPoints());
         super.getPoints().addAll(ltm.getPoints());
         Optional<Double> label = super.predict(point);
-        super.getPoints().clear();
+        super.setPoints(new ArrayList<>());
         return label;
     }
 

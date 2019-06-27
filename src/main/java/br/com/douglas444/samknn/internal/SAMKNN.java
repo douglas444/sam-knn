@@ -31,16 +31,16 @@ public class SAMKNN {
      */
     public Optional<Double> predict(Point point) {
 
-        double wst = this.stm.calculateWeight(this.stm.getPoints());
-        double wlt = this.ltm.calculateWeight(this.stm.getPoints());
-        double wc = this.cm.calculateWeight(this.stm.getPoints());
+        double wst = this.stm.calculateWeight();
+        double wlt = this.ltm.calculateWeight(this.stm.size());
+        double wc = this.cm.calculateWeight(this.stm.size());
 
         Optional<Double> label;
-        if (wst > Math.max(wlt, wc)) {
+        if (wst >= Math.max(wlt, wc)) {
             label = this.stm.predict(point);
-        } else if (wlt > Math.max(wst, wc)) {
+        } else if (wlt >= wc) {
             label = this.ltm.predict(point);
-        } else  {
+        } else {
             label = this.cm.predict(point);
         }
 
@@ -64,26 +64,24 @@ public class SAMKNN {
         }
         ++timestamp;
 
-        List<Point> discardedPoints = null;
-
-        if (stm.isFull()) {
-            discardedPoints = stm.shrunk();
-        }
-
-        stm.insert(point);
         ltm.clean(stm, point);
+        stm.insert(point);
+        List<Point> discardedPoints = stm.shrunk();
 
-        if (discardedPoints != null) {
+        if (!discardedPoints.isEmpty()) {
 
             Memory memory = new Memory(discardedPoints);
             memory.clean(stm);
+            ltm.insert(memory.getPoints());
 
-            if (ltm.getRemainingSpace() < memory.getPoints().size()) {
+            while (stm.size() + ltm.size() > Hyperparameter.L_MAX) {
                 ltm.compress();
             }
 
-            ltm.insert(memory.getPoints());
         }
+
+        ltm.predictAndLog(point);
+        cm.predictAndLog(point);
 
         return label;
 

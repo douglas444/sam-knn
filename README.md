@@ -6,12 +6,3 @@ Losing, V., Hammer, B., & Wersing, H. (2016, December). KNN classifier with self
 
 Generate javadoc site
 ```mvn javadoc:javadoc```
-
-TO-DO
-
-1 - Correct STM model adaptation: To every new point in the data stream, 
-evaluate differently sized STM and shrunk the memory if necessary
-
-2- Revise the ITTE calculation in STM
-
-3 - Correct memory combined maximum size

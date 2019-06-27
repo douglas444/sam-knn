@@ -8,6 +8,24 @@ import java.util.Optional;
 
 class STM extends Memory {
 
+    private int windowLossesCount;
+
+    STM() {
+        this.windowLossesCount = 0;
+    }
+
+    STM(List<Point> sequence) {
+        this.windowLossesCount = 0;
+
+        for (Point point : sequence) {
+            this.insert(point);
+        }
+    }
+
+    private double calculateInterleavedTestTrainError() {
+        return (double) windowLossesCount / super.size();
+    }
+
     /** Returns the bisection containing the most recent samples.
      *
      * @return a list with the most recent samples.
@@ -19,26 +37,20 @@ class STM extends Memory {
 
     }
 
-    /** Resets the memory, deleting all points, and then retrains the model
-     * inserting one by one the points of the sequence passed as argument.
-     *
-     * @param sequence list of points representing the sequence.
-     * @return the Interleaved Test-Train Error.
-     */
-    private double testTrainOnSequence(List<Point> sequence) {
+    double calculateWeight() {
+        return 1 - calculateInterleavedTestTrainError();
+    }
 
-        int losses = 0;
-        super.setPoints(new ArrayList<>());
-
-        for (Point point : sequence) {
-            Optional<Double> label = super.predict(point);
-            if (label.isPresent() && label.get() != point.getY()) {
-                ++losses;
-            }
-            super.insert(point);
+    @Override
+    void insert(Point point) {
+        Optional<Double> label = super.predictAndLog(point);
+        if (!label.isPresent() || label.get() != point.getY()) {
+            ++this.windowLossesCount;
         }
-
-        return (double) losses / sequence.size();
+        super.insert(point);
+        if (super.size() == Hyperparameter.L_MAX) {
+            super.getPoints().remove(0);
+        }
 
     }
 
@@ -49,30 +61,31 @@ class STM extends Memory {
      */
     List<Point> shrunk() {
 
-        STM minimum = new STM();
-        double minimumITTE = minimum.testTrainOnSequence(this.getMostRecentBisection());
-
-        STM bisection = new STM();
-        double bisectionITTE = bisection.testTrainOnSequence(minimum.getMostRecentBisection());
-
+        STM minimum = this;
+        STM bisection = new STM(this.getMostRecentBisection());
 
         while (bisection.size() > Hyperparameter.L_MIN) {
 
-            if (bisectionITTE < minimumITTE) {
-                minimumITTE = bisectionITTE;
+            if (bisection.calculateInterleavedTestTrainError() < minimum.calculateInterleavedTestTrainError()) {
                 minimum = bisection;
             }
 
-            bisectionITTE = bisection.testTrainOnSequence(bisection.getMostRecentBisection());
+            bisection = new STM(bisection.getMostRecentBisection());
 
         }
 
-        List<Point> discardedPoints = super.getPoints().subList(0,
-                super.size() - minimum.size() - 1);
+        List<Point> discardedPoints = super.getPoints().subList(0, super.size() - minimum.size());
 
-        super.setPoints(minimum.getPoints());
+        if (minimum != this) {
+            super.setPoints(minimum.getPoints());
+            this.windowLossesCount = minimum.getWindowLossesCount();
+        }
+
         return discardedPoints;
 
     }
 
+    private int getWindowLossesCount() {
+        return windowLossesCount;
+    }
 }
