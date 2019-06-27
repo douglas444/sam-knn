@@ -8,22 +8,17 @@ import java.util.Optional;
 
 class STM extends Memory {
 
-    private int windowLossesCount;
 
-    STM() {
-        this.windowLossesCount = 0;
-    }
+    STM() {}
 
     STM(List<Point> sequence) {
-        this.windowLossesCount = 0;
-
         for (Point point : sequence) {
             this.insert(point);
         }
     }
 
     private double calculateInterleavedTestTrainError() {
-        return (double) windowLossesCount / super.size();
+        return 1 - super.calculateWeight(super.size());
     }
 
     /** Returns the bisection containing the most recent samples.
@@ -37,16 +32,9 @@ class STM extends Memory {
 
     }
 
-    double calculateWeight() {
-        return 1 - calculateInterleavedTestTrainError();
-    }
-
     @Override
     void insert(Point point) {
-        Optional<Double> label = super.predictAndLog(point);
-        if (!label.isPresent() || label.get() != point.getY()) {
-            ++this.windowLossesCount;
-        }
+        super.predictAndLog(point);
         super.insert(point);
         if (super.size() == Hyperparameter.L_MAX) {
             super.getPoints().remove(0);
@@ -78,14 +66,12 @@ class STM extends Memory {
 
         if (minimum != this) {
             super.setPoints(minimum.getPoints());
-            this.windowLossesCount = minimum.getWindowLossesCount();
+            super.setPredictionLogs(minimum.getPredictionLogs());
         }
+
 
         return discardedPoints;
 
     }
 
-    private int getWindowLossesCount() {
-        return windowLossesCount;
-    }
 }

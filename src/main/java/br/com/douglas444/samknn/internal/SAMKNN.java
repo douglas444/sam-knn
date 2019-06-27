@@ -31,7 +31,7 @@ public class SAMKNN {
      */
     public Optional<Double> predict(Point point) {
 
-        double wst = this.stm.calculateWeight();
+        double wst = this.stm.calculateWeight(this.stm.size());
         double wlt = this.ltm.calculateWeight(this.stm.size());
         double wc = this.cm.calculateWeight(this.stm.size());
 
@@ -71,6 +71,7 @@ public class SAMKNN {
         if (!discardedPoints.isEmpty()) {
 
             Memory memory = new Memory(discardedPoints);
+
             memory.clean(stm);
             ltm.insert(memory.getPoints());
 

@@ -170,4 +170,12 @@ class Memory {
     void setPoints(List<Point> points) {
         this.points = points;
     }
+
+    public List<Boolean> getPredictionLogs() {
+        return predictionLogs;
+    }
+
+    void setPredictionLogs(List<Boolean> predictionLogs) {
+        this.predictionLogs = predictionLogs;
+    }
 }
