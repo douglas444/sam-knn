@@ -20,14 +20,9 @@ public class DSFileReader {
      *
      * @return the next point of the stream.
      */
-    public Point next() throws DSException {
+    public Point next() throws IOException, NumberFormatException {
 
-        String line = null;
-        try {
-            line = bufferedReaderData.readLine();
-        } catch (IOException e) {
-            throw new DSException(e.getMessage());
-        }
+        String line = bufferedReaderData.readLine();
 
         if (line == null) {
             return null;
@@ -37,26 +32,12 @@ public class DSFileReader {
         double[] x = new double[splittedLine.length];
 
         for (int i = 0; i < splittedLine.length; ++i) {
-            try {
-                x[i] = Double.parseDouble(splittedLine[i]);
-            } catch (NumberFormatException e) {
-                throw new DSException(e.getMessage());
-            }
+            x[i] = Double.parseDouble(splittedLine[i]);
         }
 
+        line = bufferedReaderLabel.readLine();
 
-        try {
-            line = bufferedReaderLabel.readLine();
-        } catch (IOException e) {
-            throw new DSException(e.getMessage());
-        }
-
-        double y;
-        try {
-            y = Double.parseDouble(line);
-        } catch(NumberFormatException e) {
-            throw new DSException(e.getMessage());
-        }
+        double y = Double.parseDouble(line);
 
         return new Point(x, y);
     }
