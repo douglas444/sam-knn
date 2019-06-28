@@ -8,17 +8,21 @@ import java.util.Optional;
 
 class STM extends Memory {
 
-
     STM() {}
 
-    STM(List<Point> sequence) {
+    private STM(List<Point> sequence) {
+
         for (Point point : sequence) {
-            this.insert(point);
+            super.predict(point);
+            super.insert(point);
         }
+
     }
 
     private double calculateInterleavedTestTrainError() {
+
         return 1 - super.calculateWeight(super.size());
+
     }
 
     /** Returns the bisection containing the most recent samples.
@@ -28,17 +32,17 @@ class STM extends Memory {
     private List<Point> getMostRecentBisection() {
 
         List<Point> set = super.getPoints();
-        return set.subList(set.size()/2, set.size());
+        return super.getPoints().subList(set.size()/2, set.size());
 
     }
 
-    @Override
-    void insert(Point point) {
-        super.predictAndLog(point);
+    Optional<Point> update(Point point) {
+
         super.insert(point);
         if (super.size() == Hyperparameter.L_MAX) {
-            super.getPoints().remove(0);
+            return Optional.of(super.getPoints().remove(0));
         }
+        return Optional.empty();
 
     }
 

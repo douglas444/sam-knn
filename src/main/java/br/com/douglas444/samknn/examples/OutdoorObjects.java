@@ -16,8 +16,8 @@ public class OutdoorObjects {
         FileReader labelFile;
 
         try {
-            dataFile = new FileReader(new File("./outdoorStream.data"));
-            labelFile = new FileReader(new File("./outdoorStream.labels"));
+            dataFile = new FileReader(new File("./datasets/outdoorStream.data"));
+            labelFile = new FileReader(new File("./datasets/outdoorStream.labels"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

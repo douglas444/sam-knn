@@ -16,8 +16,8 @@ public class MovingSquares {
         FileReader labelFile;
 
         try {
-            dataFile = new FileReader(new File("./movingSquares.data"));
-            labelFile = new FileReader(new File("./movingSquares.labels"));
+            dataFile = new FileReader(new File("./datasets/movingSquares.data"));
+            labelFile = new FileReader(new File("./datasets/movingSquares.labels"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

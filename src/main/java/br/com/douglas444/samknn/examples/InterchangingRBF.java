@@ -15,8 +15,8 @@ public class InterchangingRBF {
         FileReader labelFile;
 
         try {
-            dataFile = new FileReader(new File("./interchangingRBF.data"));
-            labelFile = new FileReader(new File("./interchangingRBF.labels"));
+            dataFile = new FileReader(new File("./datasets/interchangingRBF.data"));
+            labelFile = new FileReader(new File("./datasets/interchangingRBF.labels"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

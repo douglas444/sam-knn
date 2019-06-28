@@ -15,8 +15,8 @@ public class RotatingHyperplane {
         FileReader labelFile;
 
         try {
-            dataFile = new FileReader(new File("./rotatingHyperplane.data"));
-            labelFile = new FileReader(new File("./rotatingHyperplane.labels"));
+            dataFile = new FileReader(new File("./datasets/rotatingHyperplane.data"));
+            labelFile = new FileReader(new File("./datasets/rotatingHyperplane.labels"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

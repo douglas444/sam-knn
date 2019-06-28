@@ -93,19 +93,6 @@ class Memory {
                 .sum() / m;
     }
 
-    Optional<Double> predictAndLog(Point point) {
-        Optional<Double> label = this.predict(point);
-        if (label.isPresent() && label.get() == point.getY()) {
-            predictionLogs.add(true);
-        } else {
-            predictionLogs.add(false);
-        }
-        if (predictionLogs.size() == Hyperparameter.L_MAX) {
-            predictionLogs.remove(0);
-        }
-        return label;
-    }
-
     /** Predicts the label of a point.
      *
      * @param point the point which the label will be predicted.
@@ -132,11 +119,23 @@ class Memory {
             }
         }
 
+        Optional<Double> label;
         if (maxEntry == null) {
-            return Optional.empty();
+            label = Optional.empty();
         } else {
-            return Optional.of(maxEntry.getKey());
+            label = Optional.of(maxEntry.getKey());
         }
+
+        if (label.isPresent() && label.get() == point.getY()) {
+            predictionLogs.add(true);
+        } else {
+            predictionLogs.add(false);
+        }
+        if (predictionLogs.size() == Hyperparameter.L_MAX) {
+            predictionLogs.remove(0);
+        }
+
+        return label;
     }
 
     /** Updates the model inserting a point into the memory.
@@ -171,7 +170,7 @@ class Memory {
         this.points = points;
     }
 
-    public List<Boolean> getPredictionLogs() {
+    List<Boolean> getPredictionLogs() {
         return predictionLogs;
     }
 

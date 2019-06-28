@@ -16,8 +16,8 @@ public class Weather {
         FileReader labelFile;
 
         try {
-            dataFile = new FileReader(new File("./NEweather_data.csv"));
-            labelFile = new FileReader(new File("./NEweather_class.csv"));
+            dataFile = new FileReader(new File("./datasets/NEweather_data.csv"));
+            labelFile = new FileReader(new File("./datasets/NEweather_class.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
