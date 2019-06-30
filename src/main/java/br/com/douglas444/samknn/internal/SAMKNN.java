@@ -1,6 +1,6 @@
 package br.com.douglas444.samknn.internal;
 
-import br.com.douglas444.dsframework.Point;
+import br.com.douglas444.common.Point;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,13 +1,12 @@
-package br.com.douglas444.samknn.internal.kmeans;
+package br.com.douglas444.common;
 
-import br.com.douglas444.dsframework.Point;
 import java.util.List;
 
 public class Cluster {
 
     private List<Point> points;
 
-    Cluster(List<Point> points) {
+    public Cluster(List<Point> points) {
         this.points = points;
     }
 

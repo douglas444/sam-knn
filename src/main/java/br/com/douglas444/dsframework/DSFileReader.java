@@ -1,5 +1,7 @@
 package br.com.douglas444.dsframework;
 
+import br.com.douglas444.common.Point;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

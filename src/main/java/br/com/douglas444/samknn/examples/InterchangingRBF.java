@@ -1,7 +1,7 @@
 package br.com.douglas444.samknn.examples;
 
 import br.com.douglas444.dsframework.DSFileReader;
-import br.com.douglas444.dsframework.RunnableStream;
+import br.com.douglas444.dsframework.DSRunnable;
 import br.com.douglas444.samknn.SAMKNNController;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +23,7 @@ public class InterchangingRBF {
         }
 
         try {
-            RunnableStream.start(new SAMKNNController(), new DSFileReader(" ", dataFile, labelFile));
+            DSRunnable.run(new SAMKNNController(), new DSFileReader(" ", dataFile, labelFile));
         } catch (IOException e) {
             e.printStackTrace();
         }

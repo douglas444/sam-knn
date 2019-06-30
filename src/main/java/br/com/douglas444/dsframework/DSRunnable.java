@@ -1,10 +1,12 @@
 package br.com.douglas444.dsframework;
 
+import br.com.douglas444.common.Point;
+
 import java.io.IOException;
 
-public class RunnableStream {
+public class DSRunnable {
 
-    public static void start(DSClassifierController dsClassifierController, DSFileReader dsFileReader) throws IOException {
+    public static void run(DSClassifierController dsClassifierController, DSFileReader dsFileReader) throws IOException {
 
         int t = 0;
         Point point;

@@ -1,4 +1,4 @@
-package br.com.douglas444.dsframework;
+package br.com.douglas444.common;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -39,7 +39,7 @@ public class Point {
      * @param o the reference to the object to be compared
      * @return true if the coordinates x and y are the same as the point
      * passed as argument; false otherwise or if the object passed isn't
-     * a instance of br.com.douglas444.dsframework.Point class
+     * a instance of br.com.douglas444.common.Point class
      */
     @Override
     public boolean equals(Object o) {

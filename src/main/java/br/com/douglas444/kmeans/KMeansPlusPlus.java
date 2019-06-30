@@ -1,6 +1,7 @@
-package br.com.douglas444.samknn.internal.kmeans;
+package br.com.douglas444.kmeans;
 
-import br.com.douglas444.dsframework.Point;
+import br.com.douglas444.common.Cluster;
+import br.com.douglas444.common.Point;
 import java.util.*;
 
 public class KMeansPlusPlus {
