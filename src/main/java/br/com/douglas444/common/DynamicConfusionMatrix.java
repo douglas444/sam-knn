@@ -9,44 +9,71 @@ public class DynamicConfusionMatrix {
 
     private int knownPredictedLabelsCount;
     private int novelPredictedLabelsCount;
-    private List<Double> actualLabels;
-    private HashMap<Double, List<Integer>> predictionsAsKnownPerActualLabel;
-    private HashMap<Double, List<Integer>> predictionsAsNovelPerActualLabel;
+    private int actualLabelsCount;
+    private int predictedLabelsCount;
 
-    public DynamicConfusionMatrix(List<Double> knownLabels) {
+    private HashMap<Integer, Integer> actualLabelEnumByActualLabel;
+    private HashMap<Integer, Integer> predictedLabelEnumByPredictedLabel;
+
+    private HashMap<Integer, List<Integer>> predictionsAsKnownByActualLabel;
+    private HashMap<Integer, List<Integer>> predictionsAsNovelByActualLabel;
+
+    public DynamicConfusionMatrix(List<Integer> knownLabels) {
+
+        actualLabelEnumByActualLabel = new HashMap<>();
+        predictedLabelEnumByPredictedLabel = new HashMap<>();
 
         this.knownPredictedLabelsCount = knownLabels.size();
         this.novelPredictedLabelsCount = 0;
 
-        this.actualLabels = new ArrayList<>(knownLabels);
-        this.predictionsAsKnownPerActualLabel = new HashMap<>();
-        this.predictionsAsNovelPerActualLabel = new HashMap<>();
+        this.predictionsAsKnownByActualLabel = new HashMap<>();
+        this.predictionsAsNovelByActualLabel = new HashMap<>();
 
         knownLabels.forEach(label -> {
 
-            this.predictionsAsKnownPerActualLabel.put(label,
+            actualLabelEnumByActualLabel.put(label, actualLabelsCount);
+            predictedLabelEnumByPredictedLabel.put(label, actualLabelsCount);
+            ++actualLabelsCount;
+
+            this.predictionsAsKnownByActualLabel.put(label,
                     new ArrayList<>(Collections.nCopies(knownLabels.size(), 0)));
 
-            this.predictionsAsNovelPerActualLabel.put(label, new ArrayList<>());
+            this.predictionsAsNovelByActualLabel.put(label, new ArrayList<>());
 
         });
 
     }
 
-    public void add(double actualLabel, double predictedLabel, boolean isNovel) {
+    public void add(int actualLabel, int predictedLabel, boolean isNovel) {
 
-        if(!actualLabels.contains(actualLabel)) {
-            predictionsAsKnownPerActualLabel.put(actualLabel, Collections.nCopies(knownPredictedLabelsCount, 0));
-            predictionsAsNovelPerActualLabel.put(actualLabel, Collections.nCopies(novelPredictedLabelsCount, 0));
-            actualLabels.add(actualLabel);
+
+        if (actualLabelEnumByActualLabel.get(actualLabel) == null) {
+
+            actualLabelEnumByActualLabel.put(actualLabelsCount, actualLabel);
+            predictionsAsKnownByActualLabel.put(actualLabelsCount, Collections.nCopies(knownPredictedLabelsCount, 0));
+            predictionsAsNovelByActualLabel.put(actualLabelsCount, Collections.nCopies(novelPredictedLabelsCount, 0));
+            ++actualLabelsCount;
         }
+
+        if (predictedLabelEnumByPredictedLabel.get(predictedLabel) == null) {
+
+            predictedLabelEnumByPredictedLabel.put(predictedLabelsCount, predictedLabel);
+            predictionsAsNovelByActualLabel.forEach((key, value) -> value.add(0));
+            ++predictedLabelsCount;
+        }
+
+        int actualLabelEnum = actualLabelEnumByActualLabel.get(actualLabel);
+        int predictedLabelEnum = predictedLabelEnumByPredictedLabel.get(predictedLabel);
 
         if (isNovel) {
 
-            if (!predictionsAsNovelPerActualLabel.keySet().contains(predictedLabel)) {
-                predictionsAsNovelPerActualLabel.forEach((key, value) -> value.add(0));
-            }
+            int count = predictionsAsNovelByActualLabel.get(actualLabelEnum).get(predictedLabelEnum);
+            predictionsAsNovelByActualLabel.get(actualLabelEnum).add(predictedLabelEnum, count + 1);
 
+        } else {
+
+            int count = predictionsAsKnownByActualLabel.get(actualLabelEnum).get(predictedLabelEnum);
+            predictionsAsKnownByActualLabel.get(actualLabelEnum).add(predictedLabelEnum, count + 1);
 
         }
 
