@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Cluster {
 
+    private String category;
     private List<Point> points;
 
     public Cluster(List<Point> points) {
@@ -28,11 +29,32 @@ public class Cluster {
 
     }
 
+    public double calculateStandardDeviation() {
+
+        Point center = this.calculateCenter();
+
+        double sum = this
+                .points
+                .stream()
+                .mapToDouble(point -> Math.pow(point.distance(center), 2))
+                .sum();
+
+        return Math.sqrt(sum / this.points.size());
+    }
+
     public List<Point> getPoints() {
         return points;
     }
 
     public void setPoints(List<Point> points) {
         this.points = points;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

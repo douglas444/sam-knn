@@ -5,8 +5,15 @@ import java.util.Objects;
 
 public class Point {
 
+    private int t;
     private double[] x;
     private double y;
+
+    public Point(int t, double[] x, double y) {
+        this.t = t;
+        this.x = x;
+        this.y = y;
+    }
 
     public Point(double[] x, double y) {
         this.x = x;
@@ -95,6 +102,14 @@ public class Point {
         }
         return point;
 
+    }
+
+    public int getT() {
+        return t;
+    }
+
+    public void setT(int t) {
+        this.t = t;
     }
 
     public double[] getX() {

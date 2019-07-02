@@ -1,6 +1,6 @@
 package br.com.douglas444.samknn;
 
-import br.com.douglas444.dsframework.DSClassifierController;
+import br.com.douglas444.datastream.DSClassifierController;
 import br.com.douglas444.common.Point;
 import br.com.douglas444.samknn.internal.SAMKNN;
 
