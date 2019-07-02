@@ -1,6 +1,6 @@
 package br.com.douglas444.samknn.internal;
 
-import br.com.douglas444.common.Point;
+import br.com.douglas444.mltk.Point;
 
 import java.util.ArrayList;
 import java.util.List;

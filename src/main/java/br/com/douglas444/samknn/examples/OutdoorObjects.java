@@ -1,7 +1,7 @@
 package br.com.douglas444.samknn.examples;
 
-import br.com.douglas444.datastream.DSFileReader;
-import br.com.douglas444.datastream.DSRunnable;
+import br.com.douglas444.dsframework.DSFileReader;
+import br.com.douglas444.dsframework.DSRunnable;
 import br.com.douglas444.samknn.SAMKNNController;
 
 import java.io.File;

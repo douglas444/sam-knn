@@ -1,7 +1,7 @@
 package br.com.douglas444.samknn.internal;
 
-import br.com.douglas444.common.DistanceComparator;
-import br.com.douglas444.common.Point;
+import br.com.douglas444.mltk.DistanceComparator;
+import br.com.douglas444.mltk.Point;
 
 import java.util.*;
 import java.util.stream.Collectors;
