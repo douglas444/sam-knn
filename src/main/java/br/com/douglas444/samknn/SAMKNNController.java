@@ -20,8 +20,9 @@ public class SAMKNNController implements DSClassifierController {
     }
 
     @Override
-    public double getAccuracy() {
-        return samknn.calculatesAccuracy();
+    public String getLog() {
+        return " Timestamp: " + samknn.getTimestamp() + " Accuracy: " + samknn.calculatesAccuracy();
     }
+
 
 }
