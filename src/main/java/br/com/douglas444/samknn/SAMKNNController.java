@@ -21,7 +21,13 @@ public class SAMKNNController implements DSClassifierController {
 
     @Override
     public String getLog() {
-        return " Timestamp: " + samknn.getTimestamp() + " Accuracy: " + samknn.calculatesAccuracy();
+
+        return " Timestamp: " +
+                samknn.getTimestamp() +
+                " Accuracy: " +
+                samknn.calculatesAccuracy() +
+                "\n\n" +
+                samknn.getConfusionMatrix().toString();
     }
 
 

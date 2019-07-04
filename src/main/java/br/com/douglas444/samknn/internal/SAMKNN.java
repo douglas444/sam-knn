@@ -1,7 +1,10 @@
 package br.com.douglas444.samknn.internal;
 
+import br.com.douglas444.mltk.DynamicConfusionMatrix;
 import br.com.douglas444.mltk.Point;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +15,7 @@ public class SAMKNN {
     private STM stm;
     private LTM ltm;
     private CM cm;
+    private DynamicConfusionMatrix confusionMatrix;
 
     public SAMKNN() {
 
@@ -20,6 +24,7 @@ public class SAMKNN {
         this.stm = new STM();
         this.ltm = new LTM();
         this.cm = new CM(this.stm, this.ltm);
+        confusionMatrix = new DynamicConfusionMatrix(new ArrayList<>());
     }
 
 
@@ -82,6 +87,7 @@ public class SAMKNN {
             ltm.compress();
         }
 
+        confusionMatrix.add((int)point.getY(), label.map(Double::intValue).orElse(0), true);
         return label;
 
     }
@@ -104,5 +110,13 @@ public class SAMKNN {
 
     public int getLosses() {
         return losses;
+    }
+
+    public DynamicConfusionMatrix getConfusionMatrix() {
+        return confusionMatrix;
+    }
+
+    public void setConfusionMatrix(DynamicConfusionMatrix confusionMatrix) {
+        this.confusionMatrix = confusionMatrix;
     }
 }
