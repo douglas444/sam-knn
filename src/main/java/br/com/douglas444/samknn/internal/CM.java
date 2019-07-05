@@ -17,10 +17,10 @@ class CM extends Memory {
     }
 
     @Override
-    Optional<Double> predict(Point point) {
+    Optional<Integer> predict(Point point) {
         super.getPoints().addAll(stm.getPoints());
         super.getPoints().addAll(ltm.getPoints());
-        Optional<Double> label = super.predict(point);
+        Optional<Integer> label = super.predict(point);
         super.setPoints(new ArrayList<>());
         return label;
     }

@@ -15,17 +15,15 @@ public class SAMKNNController implements DSClassifierController {
     }
 
     @Override
-    public Optional<Double> predictAndUpdate(Point point) {
+    public Optional<Integer> predictAndUpdate(Point point) {
         return samknn.predictAndUpdate(point);
     }
 
     @Override
     public String getLog() {
 
-        return " Timestamp: " +
-                samknn.getTimestamp() +
-                " Accuracy: " +
-                samknn.calculatesAccuracy() +
+        return " Timestamp: " + samknn.getTimestamp() +
+                " Accuracy: " + samknn.calculatesAccuracy() +
                 "\n\n" +
                 samknn.getConfusionMatrix().toString();
     }

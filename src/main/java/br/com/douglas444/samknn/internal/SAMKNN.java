@@ -34,15 +34,15 @@ public class SAMKNN {
      * @return the predicted label  or empty if there is not
      * enough points in the memory to execute the prediction.
      */
-    public Optional<Double> predict(Point point) {
+    public Optional<Integer> predict(Point point) {
 
         double wst = this.stm.calculateWeight(this.stm.size());
         double wlt = this.ltm.calculateWeight(this.stm.size());
         double wc = this.cm.calculateWeight(this.stm.size());
 
-        Optional<Double> labelSTM = this.stm.predict(point);
-        Optional<Double> labelLTM = this.ltm.predict(point);
-        Optional<Double> labelCM = this.cm.predict(point);
+        Optional<Integer> labelSTM = this.stm.predict(point);
+        Optional<Integer> labelLTM = this.ltm.predict(point);
+        Optional<Integer> labelCM = this.cm.predict(point);
 
         if (wst >= Math.max(wlt, wc)) {
             return labelSTM;
@@ -62,9 +62,9 @@ public class SAMKNN {
      * @return the predicted label  or empty if there is not
      * enough points in the memory to execute the prediction.
      */
-    public Optional<Double> predictAndUpdate(Point point) {
+    public Optional<Integer> predictAndUpdate(Point point) {
 
-        Optional<Double> label = this.predict(point);
+        Optional<Integer> label = this.predict(point);
         if (!label.isPresent() || label.get() != point.getY()) {
             ++losses;
         }
@@ -87,7 +87,7 @@ public class SAMKNN {
             ltm.compress();
         }
 
-        confusionMatrix.add((int) point.getY(), label.map(Double::intValue).orElse(0), true);
+        confusionMatrix.add(point.getY(), label.orElse(0), true);
         return label;
 
     }

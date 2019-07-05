@@ -99,9 +99,9 @@ class Memory {
      * @return the predicted label of the point or empty if there is not
      * enough points in the memory to execute the prediction.
      */
-    Optional<Double> predict(Point point) {
+    Optional<Integer> predict(Point point) {
 
-        HashMap<Double, Double> inverseDistanceSumPerY = new HashMap<>();
+        HashMap<Integer, Double> inverseDistanceSumPerY = new HashMap<>();
 
         this.getKNearestNeighbors(point, Hyperparameter.K).forEach(neighbor -> {
             inverseDistanceSumPerY.putIfAbsent(neighbor.getY(), 0.0);
@@ -110,8 +110,8 @@ class Memory {
 
         });
 
-        Map.Entry<Double, Double> maxEntry = null;
-        for (Map.Entry<Double, Double> entry : inverseDistanceSumPerY.entrySet())
+        Map.Entry<Integer, Double> maxEntry = null;
+        for (Map.Entry<Integer, Double> entry : inverseDistanceSumPerY.entrySet())
         {
             if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
             {
@@ -119,7 +119,7 @@ class Memory {
             }
         }
 
-        Optional<Double> label;
+        Optional<Integer> label;
         if (maxEntry == null) {
             label = Optional.empty();
         } else {

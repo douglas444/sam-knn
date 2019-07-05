@@ -16,7 +16,7 @@ class LTM extends Memory {
 
         List<Point> points = new ArrayList<>();
 
-        HashMap<Double, List<Point>> pointsByLabel = new HashMap<>();
+        HashMap<Integer, List<Point>> pointsByLabel = new HashMap<>();
         super.getPoints().forEach(point -> {
             pointsByLabel.putIfAbsent(point.getY(), new ArrayList<>());
             pointsByLabel.get(point.getY()).add(point);
