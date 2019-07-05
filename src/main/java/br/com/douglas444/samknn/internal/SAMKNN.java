@@ -87,7 +87,7 @@ public class SAMKNN {
             ltm.compress();
         }
 
-        confusionMatrix.add((int)point.getY(), label.map(Double::intValue).orElse(0), true);
+        confusionMatrix.add((int) point.getY(), label.map(Double::intValue).orElse(0), true);
         return label;
 
     }
