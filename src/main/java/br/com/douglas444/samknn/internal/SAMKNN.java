@@ -1,7 +1,7 @@
 package br.com.douglas444.samknn.internal;
 
 import br.com.douglas444.mltk.DynamicConfusionMatrix;
-import br.com.douglas444.mltk.Point;
+import br.com.douglas444.mltk.Sample;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,21 +28,21 @@ public class SAMKNN {
     }
 
 
-    /** Predicts the label of a point using the current model.
+    /** Predicts the label of a sample using the current model.
      *
-     * @param point the point that the label will be predicted.
+     * @param sample the sample that the label will be predicted.
      * @return the predicted label  or empty if there is not
-     * enough points in the memory to execute the prediction.
+     * enough samples in the memory to execute the prediction.
      */
-    public Optional<Integer> predict(Point point) {
+    public Optional<Integer> predict(Sample sample) {
 
         double wst = this.stm.calculateWeight(this.stm.size());
         double wlt = this.ltm.calculateWeight(this.stm.size());
         double wc = this.cm.calculateWeight(this.stm.size());
 
-        Optional<Integer> labelSTM = this.stm.predict(point);
-        Optional<Integer> labelLTM = this.ltm.predict(point);
-        Optional<Integer> labelCM = this.cm.predict(point);
+        Optional<Integer> labelSTM = this.stm.predict(sample);
+        Optional<Integer> labelLTM = this.ltm.predict(sample);
+        Optional<Integer> labelCM = this.cm.predict(sample);
 
         if (wst >= Math.max(wlt, wc)) {
             return labelSTM;
@@ -54,32 +54,32 @@ public class SAMKNN {
 
     }
 
-    /** Predicts the label of a point using the current model and updates the
+    /** Predicts the label of a sample using the current model and updates the
      * model using the true label.
      *
-     * @param point the point that the label will be predicted and that the
+     * @param sample the sample that the label will be predicted and that the
      *              true label will be used to update the model.
      * @return the predicted label  or empty if there is not
-     * enough points in the memory to execute the prediction.
+     * enough samples in the memory to execute the prediction.
      */
-    public Optional<Integer> predictAndUpdate(Point point) {
+    public Optional<Integer> predictAndUpdate(Sample sample) {
 
-        Optional<Integer> label = this.predict(point);
-        if (!label.isPresent() || label.get() != point.getY()) {
+        Optional<Integer> label = this.predict(sample);
+        if (!label.isPresent() || label.get() != sample.getY()) {
             ++losses;
         }
         ++timestamp;
 
-        ltm.clean(stm, point);
-        Optional<Point> overflow = stm.update(point);
+        ltm.clean(stm, sample);
+        Optional<Sample> overflow = stm.update(sample);
         overflow.ifPresent(value -> ltm.insert(value));
-        List<Point> discardedPoints = stm.shrunk();
+        List<Sample> discardedSamples = stm.shrunk();
 
-        if (!discardedPoints.isEmpty()) {
+        if (!discardedSamples.isEmpty()) {
 
-            Memory memory = new Memory(discardedPoints);
+            Memory memory = new Memory(discardedSamples);
             memory.clean(stm);
-            ltm.insert(memory.getPoints());
+            ltm.insert(memory.getSamples());
 
         }
 
@@ -87,7 +87,7 @@ public class SAMKNN {
             ltm.compress();
         }
 
-        confusionMatrix.add(point.getY(), label.orElse(0), true);
+        confusionMatrix.add(sample.getY(), label.orElse(0), true);
         return label;
 
     }

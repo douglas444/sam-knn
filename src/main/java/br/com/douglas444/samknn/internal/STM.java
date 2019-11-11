@@ -1,6 +1,6 @@
 package br.com.douglas444.samknn.internal;
 
-import br.com.douglas444.mltk.Point;
+import br.com.douglas444.mltk.Sample;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,11 +9,11 @@ class STM extends Memory {
 
     STM() {}
 
-    private STM(List<Point> sequence) {
+    private STM(List<Sample> sequence) {
 
-        for (Point point : sequence) {
-            super.predict(point);
-            super.insert(point);
+        for (Sample sample : sequence) {
+            super.predict(sample);
+            super.insert(sample);
         }
 
     }
@@ -28,29 +28,29 @@ class STM extends Memory {
      *
      * @return a list with the most recent samples.
      */
-    private List<Point> getMostRecentBisection() {
+    private List<Sample> getMostRecentBisection() {
 
-        List<Point> set = super.getPoints();
-        return super.getPoints().subList(set.size()/2, set.size());
+        List<Sample> set = super.getSamples();
+        return super.getSamples().subList(set.size()/2, set.size());
 
     }
 
-    Optional<Point> update(Point point) {
+    Optional<Sample> update(Sample sample) {
 
-        super.insert(point);
+        super.insert(sample);
         if (super.size() == Hyperparameter.L_MAX) {
-            return Optional.of(super.getPoints().remove(0));
+            return Optional.of(super.getSamples().remove(0));
         }
         return Optional.empty();
 
     }
 
     /** Shrunk the memory size, sliding the dynamic window to the most recent
-     * points such that the Interleaved Test-Train error is minimized.
+     * samples such that the Interleaved Test-Train error is minimized.
      *
-     * @return a list with the discarded points.
+     * @return a list with the discarded samples.
      */
-    List<Point> shrunk() {
+    List<Sample> shrunk() {
 
         STM minimum = this;
         STM bisection = new STM(this.getMostRecentBisection());
@@ -65,15 +65,15 @@ class STM extends Memory {
 
         }
 
-        List<Point> discardedPoints = super.getPoints().subList(0, super.size() - minimum.size());
+        List<Sample> discardedSamples = super.getSamples().subList(0, super.size() - minimum.size());
 
         if (minimum != this) {
-            super.setPoints(minimum.getPoints());
+            super.setSamples(minimum.getSamples());
             super.setPredictionLogs(minimum.getPredictionLogs());
         }
 
 
-        return discardedPoints;
+        return discardedSamples;
 
     }
 

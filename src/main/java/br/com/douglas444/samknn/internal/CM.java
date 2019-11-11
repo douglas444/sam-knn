@@ -1,6 +1,6 @@
 package br.com.douglas444.samknn.internal;
 
-import br.com.douglas444.mltk.Point;
+import br.com.douglas444.mltk.Sample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +17,20 @@ class CM extends Memory {
     }
 
     @Override
-    Optional<Integer> predict(Point point) {
-        super.getPoints().addAll(stm.getPoints());
-        super.getPoints().addAll(ltm.getPoints());
-        Optional<Integer> label = super.predict(point);
-        super.setPoints(new ArrayList<>());
+    Optional<Integer> predict(Sample sample) {
+        super.getSamples().addAll(stm.getSamples());
+        super.getSamples().addAll(ltm.getSamples());
+        Optional<Integer> label = super.predict(sample);
+        super.setSamples(new ArrayList<>());
         return label;
     }
 
     @Override
-    public List<Point> getPoints() {
-        List<Point> points = new ArrayList<>();
-        points.addAll(stm.getPoints());
-        points.addAll(ltm.getPoints());
-        return points;
+    public List<Sample> getSamples() {
+        List<Sample> samples = new ArrayList<>();
+        samples.addAll(stm.getSamples());
+        samples.addAll(ltm.getSamples());
+        return samples;
     }
 
 }
