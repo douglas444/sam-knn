@@ -1,4 +1,4 @@
-package br.com.douglas444.samknn.internal;
+package br.com.douglas444.samknn.core;
 
 class Hyperparameter {
 

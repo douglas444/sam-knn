@@ -1,6 +1,6 @@
-package br.com.douglas444.samknn.internal;
+package br.com.douglas444.samknn.core;
 
-import br.com.douglas444.mltk.Sample;
+import br.com.douglas444.mltk.datastructure.Sample;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +30,12 @@ class STM extends Memory {
      */
     private List<Sample> getMostRecentBisection() {
 
-        List<Sample> set = super.getSamples();
+        final List<Sample> set = super.getSamples();
         return super.getSamples().subList(set.size()/2, set.size());
 
     }
 
-    Optional<Sample> update(Sample sample) {
+    Optional<Sample> update(final Sample sample) {
 
         super.insert(sample);
         if (super.size() == Hyperparameter.L_MAX) {
@@ -65,7 +65,7 @@ class STM extends Memory {
 
         }
 
-        List<Sample> discardedSamples = super.getSamples().subList(0, super.size() - minimum.size());
+        final List<Sample> discardedSamples = super.getSamples().subList(0, super.size() - minimum.size());
 
         if (minimum != this) {
             super.setSamples(minimum.getSamples());

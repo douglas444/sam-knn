@@ -1,7 +1,7 @@
 package br.com.douglas444.samknn.examples;
 
+import br.com.douglas444.dsframework.DSClassifierExecutor;
 import br.com.douglas444.dsframework.DSFileReader;
-import br.com.douglas444.dsframework.DSRunnable;
 import br.com.douglas444.samknn.SAMKNNController;
 
 import java.io.File;
@@ -12,8 +12,8 @@ import java.io.IOException;
 public class OutdoorObjects {
     public static void main(String[] args) {
 
-        FileReader dataFile;
-        FileReader labelFile;
+        final FileReader dataFile;
+        final FileReader labelFile;
 
         try {
             dataFile = new FileReader(new File("./datasets/outdoorStream.data"));
@@ -24,7 +24,7 @@ public class OutdoorObjects {
         }
 
         try {
-            DSRunnable.run(new SAMKNNController(), new DSFileReader(" ", dataFile, labelFile));
+            DSClassifierExecutor.start(new SAMKNNController(), new DSFileReader(" ", dataFile, labelFile));
         } catch (IOException e) {
             e.printStackTrace();
         }

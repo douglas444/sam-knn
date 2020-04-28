@@ -1,8 +1,8 @@
 package br.com.douglas444.samknn;
 
 import br.com.douglas444.dsframework.DSClassifierController;
-import br.com.douglas444.mltk.Sample;
-import br.com.douglas444.samknn.internal.SAMKNN;
+import br.com.douglas444.mltk.datastructure.Sample;
+import br.com.douglas444.samknn.core.SAMKNN;
 
 import java.util.Optional;
 

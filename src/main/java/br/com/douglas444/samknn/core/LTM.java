@@ -1,8 +1,8 @@
-package br.com.douglas444.samknn.internal;
+package br.com.douglas444.samknn.core;
 
-import br.com.douglas444.mltk.Cluster;
-import br.com.douglas444.mltk.Sample;
-import br.com.douglas444.mltk.kmeans.KMeansPlusPlus;
+import br.com.douglas444.mltk.datastructure.Cluster;
+import br.com.douglas444.mltk.datastructure.Sample;
+import br.com.douglas444.mltk.clustering.kmeans.KMeans;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,17 +14,16 @@ class LTM extends Memory {
      */
     void compress() {
 
-        List<Sample> samples = new ArrayList<>();
+        final List<Sample> samples = new ArrayList<>();
 
-        HashMap<Integer, List<Sample>> samplesByLabel = new HashMap<>();
+        final HashMap<Integer, List<Sample>> samplesByLabel = new HashMap<>();
         super.getSamples().forEach(sample -> {
             samplesByLabel.putIfAbsent(sample.getY(), new ArrayList<>());
             samplesByLabel.get(sample.getY()).add(sample);
         });
 
         samplesByLabel.forEach((key, value) -> {
-            KMeansPlusPlus kMeansPlusPlus = new KMeansPlusPlus(value, value.size() / 2);
-            List<Cluster> clusters = kMeansPlusPlus.fit();
+            List<Cluster> clusters = KMeans.execute(value, value.size() / 2, 0);
             clusters.forEach(cluster -> {
                 samples.add(cluster.calculateCenter());
             });

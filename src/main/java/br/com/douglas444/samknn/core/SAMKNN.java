@@ -1,10 +1,9 @@
-package br.com.douglas444.samknn.internal;
+package br.com.douglas444.samknn.core;
 
-import br.com.douglas444.mltk.DynamicConfusionMatrix;
-import br.com.douglas444.mltk.Sample;
+import br.com.douglas444.mltk.datastructure.DynamicConfusionMatrix;
+import br.com.douglas444.mltk.datastructure.Sample;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +11,10 @@ public class SAMKNN {
 
     private int timestamp;
     private int losses;
-    private STM stm;
-    private LTM ltm;
-    private CM cm;
-    private DynamicConfusionMatrix confusionMatrix;
+    private final STM stm;
+    private final LTM ltm;
+    private final CM cm;
+    private final DynamicConfusionMatrix confusionMatrix;
 
     public SAMKNN() {
 
@@ -34,15 +33,15 @@ public class SAMKNN {
      * @return the predicted label  or empty if there is not
      * enough samples in the memory to execute the prediction.
      */
-    public Optional<Integer> predict(Sample sample) {
+    public Optional<Integer> predict(final Sample sample) {
 
-        double wst = this.stm.calculateWeight(this.stm.size());
-        double wlt = this.ltm.calculateWeight(this.stm.size());
-        double wc = this.cm.calculateWeight(this.stm.size());
+        final double wst = this.stm.calculateWeight(this.stm.size());
+        final double wlt = this.ltm.calculateWeight(this.stm.size());
+        final double wc = this.cm.calculateWeight(this.stm.size());
 
-        Optional<Integer> labelSTM = this.stm.predict(sample);
-        Optional<Integer> labelLTM = this.ltm.predict(sample);
-        Optional<Integer> labelCM = this.cm.predict(sample);
+        final Optional<Integer> labelSTM = this.stm.predict(sample);
+        final Optional<Integer> labelLTM = this.ltm.predict(sample);
+        final Optional<Integer> labelCM = this.cm.predict(sample);
 
         if (wst >= Math.max(wlt, wc)) {
             return labelSTM;
@@ -62,32 +61,32 @@ public class SAMKNN {
      * @return the predicted label  or empty if there is not
      * enough samples in the memory to execute the prediction.
      */
-    public Optional<Integer> predictAndUpdate(Sample sample) {
+    public Optional<Integer> predictAndUpdate(final Sample sample) {
 
-        Optional<Integer> label = this.predict(sample);
+        final Optional<Integer> label = this.predict(sample);
         if (!label.isPresent() || label.get() != sample.getY()) {
-            ++losses;
+            ++this.losses;
         }
-        ++timestamp;
+        ++this.timestamp;
 
-        ltm.clean(stm, sample);
-        Optional<Sample> overflow = stm.update(sample);
-        overflow.ifPresent(value -> ltm.insert(value));
-        List<Sample> discardedSamples = stm.shrunk();
+        this.ltm.clean(this.stm, sample);
+        final Optional<Sample> overflow = this.stm.update(sample);
+        overflow.ifPresent(this.ltm::insert);
+        final List<Sample> discardedSamples = this.stm.shrunk();
 
         if (!discardedSamples.isEmpty()) {
 
-            Memory memory = new Memory(discardedSamples);
-            memory.clean(stm);
-            ltm.insert(memory.getSamples());
+            final Memory memory = new Memory(discardedSamples);
+            memory.clean(this.stm);
+            this.ltm.insert(memory.getSamples());
 
         }
 
-        while (stm.size() + ltm.size() > Hyperparameter.L_MAX) {
-            ltm.compress();
+        while (this.stm.size() + this.ltm.size() > Hyperparameter.L_MAX) {
+            this.ltm.compress();
         }
 
-        confusionMatrix.add(sample.getY(), label.orElse(0), true);
+        this.confusionMatrix.addPrediction(sample.getY(), label.orElse(0), true);
         return label;
 
     }
@@ -97,26 +96,22 @@ public class SAMKNN {
      * @return the accuracy of the current model.
      */
     public double calculatesAccuracy() {
-        if (timestamp > 0) {
-            return 1 - ((double) losses / timestamp);
+        if (this.timestamp > 0) {
+            return 1 - ((double) this.losses / this.timestamp);
         } else {
             return 0;
         }
     }
 
     public int getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
     public int getLosses() {
-        return losses;
+        return this.losses;
     }
 
     public DynamicConfusionMatrix getConfusionMatrix() {
-        return confusionMatrix;
-    }
-
-    public void setConfusionMatrix(DynamicConfusionMatrix confusionMatrix) {
-        this.confusionMatrix = confusionMatrix;
+        return this.confusionMatrix;
     }
 }

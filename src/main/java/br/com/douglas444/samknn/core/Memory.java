@@ -1,7 +1,7 @@
-package br.com.douglas444.samknn.internal;
+package br.com.douglas444.samknn.core;
 
-import br.com.douglas444.mltk.DistanceComparator;
-import br.com.douglas444.mltk.Sample;
+import br.com.douglas444.mltk.util.SampleDistanceComparator;
+import br.com.douglas444.mltk.datastructure.Sample;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,17 +27,19 @@ class Memory {
      * @param k number of samples.
      * @return a list with the the k nearest samples.
      */
-    private List<Sample> getKNearestNeighbors(Sample sample, int k) {
+    private List<Sample> getKNearestNeighbors(final Sample sample, final int k) {
 
         List<Sample> sampleList = new ArrayList<>(this.samples);
         sampleList.remove(sample);
-        sampleList.sort(new DistanceComparator(sample));
+        sampleList.sort(new SampleDistanceComparator(sample));
 
-        if (k > sampleList.size()) {
-            k = sampleList.size();
+        int n = k;
+
+        if (n > sampleList.size()) {
+            n = sampleList.size();
         }
 
-        return sampleList.subList(0, k);
+        return sampleList.subList(0, n);
     }
 
     /** Cleans the samples that are inconsistent to another memory in regard of a sample.
@@ -45,18 +47,18 @@ class Memory {
      * @param memory the memory with which the samples are inconsistent.
      * @param sample the sample that will serve as base of the cleaning process.
      */
-    void clean(Memory memory, Sample sample) {
+    void clean(final Memory memory, final Sample sample) {
 
-        List<Sample> nearestNeighbors = memory
+        final List<Sample> nearestNeighbors = memory
                 .getKNearestNeighbors(sample, Hyperparameter.K)
                 .stream()
                 .filter(neighbor -> neighbor.getY() == sample.getY())
                 .collect(Collectors.toList());
 
         if (nearestNeighbors.size() > 0) {
-            double threshold = sample.distance(nearestNeighbors.get(nearestNeighbors.size() - 1));
+            final double threshold = sample.distance(nearestNeighbors.get(nearestNeighbors.size() - 1));
 
-            List<Sample> toBeRemoved = this
+            final List<Sample> toBeRemoved = this
                     .getKNearestNeighbors(sample, Hyperparameter.K)
                     .stream()
                     .filter(neighbor -> (neighbor.distance(sample) <= threshold) &&
@@ -72,13 +74,13 @@ class Memory {
      *
      * @param memory the memory with which the samples are inconsistent.
      */
-    void clean(Memory memory) {
+    void clean(final Memory memory) {
 
         memory.getSamples().forEach(sample -> this.clean(memory, sample));
 
     }
 
-    double calculateWeight(int m) {
+    double calculateWeight(final int m) {
 
         return this.predictionLogs
                 .subList(this.predictionLogs.size() - m, this.predictionLogs.size())
@@ -99,9 +101,9 @@ class Memory {
      * @return the predicted label of the sample or empty if there is not
      * enough samples in the memory to execute the prediction.
      */
-    Optional<Integer> predict(Sample sample) {
+    Optional<Integer> predict(final Sample sample) {
 
-        HashMap<Integer, Double> inverseDistanceSumPerY = new HashMap<>();
+        final HashMap<Integer, Double> inverseDistanceSumPerY = new HashMap<>();
 
         this.getKNearestNeighbors(sample, Hyperparameter.K).forEach(neighbor -> {
             inverseDistanceSumPerY.putIfAbsent(neighbor.getY(), 0.0);
@@ -119,7 +121,7 @@ class Memory {
             }
         }
 
-        Optional<Integer> label;
+        final Optional<Integer> label;
         if (maxEntry == null) {
             label = Optional.empty();
         } else {
@@ -127,12 +129,12 @@ class Memory {
         }
 
         if (label.isPresent() && label.get() == sample.getY()) {
-            predictionLogs.add(true);
+            this.predictionLogs.add(true);
         } else {
-            predictionLogs.add(false);
+            this.predictionLogs.add(false);
         }
-        if (predictionLogs.size() == Hyperparameter.L_MAX) {
-            predictionLogs.remove(0);
+        if (this.predictionLogs.size() == Hyperparameter.L_MAX) {
+            this.predictionLogs.remove(0);
         }
 
         return label;
@@ -142,15 +144,15 @@ class Memory {
      *
      * @param sample the sample to be inserted
      */
-    void insert(Sample sample) {
-        samples.add(sample);
+    void insert(final Sample sample) {
+        this.samples.add(sample);
     }
 
     /** Updates the model inserting a list of samples into the memory.
      *
      * @param samples the list of samples to be inserted
      */
-    void insert(List<Sample> samples) {
+    void insert(final List<Sample> samples) {
         this.samples.addAll(samples);
     }
 
