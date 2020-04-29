@@ -6,3 +6,7 @@ Losing, V., Hammer, B., & Wersing, H. (2016, December). KNN classifier with self
 
 Generate javadoc site
 ```mvn javadoc:javadoc```
+
+Dependencies
+```https://github.com/douglas444/mltk/releases```
+```https://github.com/douglas444/ds-framework/releases```
